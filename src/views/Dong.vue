@@ -68,27 +68,27 @@ export default {
         submit(project) {
             this.name = project.name;
             const projectInfo = {
-                name: this.nameProject,
-                host_group_name: this.nameGroupeCost,
+                name: project.nameProject,
+                host_group_name: project.nameGroupeCost,
             };
 
             console.log("added");
-            const token = localStorage.getItem("token", token);
-            
+            const token = localStorage.getItem("token");
+
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
             axios
-                .post("https://soha.iran.liara.run/api/v1/dong/project", {
-                    projectInfo,
-                })
+                .post("https://soha.iran.liara.run/api/v1/dong/project",
+                    projectInfo
+                )
                 .then((response) => {
                     console.log(response);
                     const $toast = useToast();
-                    this.$toast.success(response.data.message);
+                    $toast.success(response.data.message);
                 })
                 .catch((error) => {
                     const $toast = useToast();
-                    $toast.error(error.response.message);
+                    $toast.error(error.data.message);
                 });
 
             this.closeModal();
