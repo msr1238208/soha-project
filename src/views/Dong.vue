@@ -70,6 +70,7 @@ export default {
                     console.log(response);
                     const $toast = useToast();
                     $toast.success(response.data.message);
+                    this.getList();
                 })
                 .catch((error) => {
                     const $toast = useToast();
