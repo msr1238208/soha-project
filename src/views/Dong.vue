@@ -1,46 +1,33 @@
 <template>
     <div class="w-screen h-screen bg-gray-100">
-        <Modal v-if="showModal" @close="closeModal" @submitProject="submit" @project="projects" />
+        <CreateProjectModal v-if="showModal" @close="closeModal" @submitProject="submit" @project="projects" />
         <div class="w-full h-full">
             <div class="flex flex-col mx-6 h-full">
-                <h1 class="text-center mt-5 font-medium text-lg">دونگ</h1>
+                <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
                 <ButtonBack />
-                <div class="flex flex-col h-full justify-between">
-                    <div class="w-full flex flex-col">
-                        <div class="py-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200"
-                            v-if="project in projects" :key="submitProject">
-                            {{ project }}
-                        </div>
-                        <div
-                            class="py-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
-                            پروژه شمال ایرانسل
-                        </div>
-                        <div
-                            class="py-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
-                            123
-                        </div>
-                        <div
-                            class="py-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
-                            <div class="flex items-center justify-between">
-                                <img src="../assets/images/3dotes.svg" class="w-5 ml-3" alt="" />
-                                <p>تولد سعید</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-5">
-                        <button class="bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg" @click="showModal = true">
-                            +
-                        </button>
+                <div v-for="item in projectList" :key="item" class="flex flex-col h-full justify-between ">
+                    <div
+                        class="p-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
+                        <img src="../assets/images/3dotes.svg" class="w-5 ml-3" />
+                        <div>{{item.name}}</div>
                     </div>
                 </div>
+
+                <div class="mb-5">
+                    <button class="bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg" @click="showModal = true">
+                        +
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
 </template>
   
 <script>
-import Modal from "../components/modals/Modal.vue";
+import CreateProjectModal from "../components/modals/CreateProjectModal.vue";
 import axios from "axios";
+import ButtonBack from "../components/buttons/ButtonBack.vue";
 import { useToast } from "vue-toast-notification";
 export default {
     data() {
@@ -49,9 +36,10 @@ export default {
             showModal: false,
             nameProjectRecive: "",
             nameGroupeCostResive: "",
+            projectList: []
         };
     },
-    components: { Modal },
+    components: { CreateProjectModal, ButtonBack },
 
     watch: {
         submitProject() {
@@ -71,12 +59,9 @@ export default {
                 name: project.nameProject,
                 host_group_name: project.nameGroupeCost,
             };
-
             console.log("added");
             const token = localStorage.getItem("token");
-
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
             axios
                 .post("https://soha.iran.liara.run/api/v1/dong/project",
                     projectInfo
@@ -106,6 +91,22 @@ export default {
                     $toast.error(error.response.message);
                 });
         },
+        getList() {
+            const token = localStorage.getItem("token");
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            axios
+                .get("https://soha.iran.liara.run/api/v1/dong/project")
+                .then((response) => {
+                    console.log(response)
+                    this.projectList = response.data.data
+                })
+                .catch((error) => {
+
+                });
+        }
+    },
+    mounted() {
+        this.getList()
     },
 };
 </script>

@@ -1,8 +1,12 @@
 <template>
   <div class="top-0 h-screen w-full flex flex-col justify-center items-center">
     <div class="w-1/2 bg-white rounded-2xl shadow-md text-center py-8">
-      <component :is="currentComponent" @setPhone="setPhone" @changeComponent="changeComponent" :phone="phone"
-        @codeResive="codeResive">
+      <component
+        :is="currentComponent"
+        @setPhone="setPhone"
+        :phone="phone"
+        @codeResive="codeResive"
+      >
       </component>
 
       <button class="bg-slate-400 text-white rounded-lg py-3 w-2/3" @click="onsubmit">
@@ -45,10 +49,6 @@ export default {
 
     codeResive(otpCode) {
       this.code = otpCode;
-    },
-
-    changeComponent() {
-      console.log("gereftam");
     },
 
     onsubmit() {
