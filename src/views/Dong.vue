@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen h-screen bg-gray-100">
-        <CreateProjectModal v-if="showModal" @close="closeModal" @submitProject="submit" @project="projects" />
+        <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @submitProject="submit" @project="projects" />
         <div class="w-full h-full">
             <div class="flex flex-col mx-6 h-full">
                 <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="mb-5">
-                    <button class="bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg" @click="showModal = true">
+                    <button class="bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg" @click="showCreateModal = true">
                         +
                     </button>
                 </div>
@@ -33,7 +33,7 @@ export default {
     data() {
         return {
             project: "",
-            showModal: false,
+            showCreateModal: false,
             nameProjectRecive: "",
             nameGroupeCostResive: "",
             projectList: []
@@ -49,8 +49,8 @@ export default {
     },
 
     methods: {
-        closeModal() {
-            this.showModal = false;
+        closeCreateModal() {
+            this.showCreateModal = false;
         },
 
         submit(project) {
@@ -77,7 +77,7 @@ export default {
                     $toast.error(error.data.message);
                 });
 
-            this.closeModal();
+            this.closeCreateModal();
         },
         projects() {
             axios
