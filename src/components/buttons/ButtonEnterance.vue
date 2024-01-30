@@ -1,17 +1,24 @@
 <template>
-    <div class="w-full flex flex-col">
-        <button class="bg-slate-400 text-white rounded-lg py-3">{{ title }}</button>
+    <div>
+        
     </div>
 </template>
-  
+
+
 <script>
 export default {
     props: {
         title: {
-            type: String,
+            type: String
+        }
+    },
+    methods: {
+        onsubmit() {
+            this.$emit("onSubmit");
         },
     },
-};
+}
 </script>
-  
+
+
 <style></style>
