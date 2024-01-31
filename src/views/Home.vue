@@ -15,7 +15,6 @@
 import AuthLogin from "../components/auth/authLogin";
 import AuthVerify from "../components/auth/authVerify";
 import axios from "axios";
-import { useToast } from "vue-toast-notification";
 
 export default {
   name: "Home",

@@ -25,7 +25,6 @@
 <script>
 import ButtonEnterace from "../../components/buttons/ButtonEnterance.vue";
 import axios from "axios";
-import { useToast } from "vue-toast-notification";
 
 export default {
     components: { ButtonEnterace },
@@ -79,14 +78,10 @@ export default {
                     const token = response.data.data.access_token;
                     localStorage.setItem("token", token);
                     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-                    const $toast = useToast();
-                    this.$toast.success(response.message);
                     this.$router.push("/dong");
                 })
                 .catch((error) => {
-                    const $toast = useToast();
-                    $toast.error(error.response.message);
+                    console.log(error.response.message);
                 });
         },
     },
