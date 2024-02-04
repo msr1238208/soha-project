@@ -1,11 +1,8 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <CreateProjectModal
-      v-if="showCreateModal"
-      @close="closeCreateModal"
-      @submitProject="submit"
-    />
-    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"  />
+    <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @submitProject="submit" />
+    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal" @closeAndShowEditModal="closeAndShowEditModal" />
+    <EditProjectModal v-if="showEditModal"  />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
@@ -13,23 +10,16 @@
         <div v-for="item in projectList" :key="item">
           <div class="flex flex-col h-full justify-between">
             <div
-              class="p-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200"
-            >
-              <img
-                src="../assets/images/3dotes.svg"
-                @click="showMore(item.name)"
-                class="w-5 ml-3"
-              />
+              class="p-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
+              <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 ml-3" />
               <div>{{ item.name }}</div>
             </div>
           </div>
         </div>
 
         <div class="mb-5">
-          <button
-            class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
-            @click="showCreateModal = true"
-          >
+          <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
+            @click="showCreateModal = true">
             +
           </button>
         </div>
@@ -44,6 +34,7 @@ import MoreModal from "../components/modals/MoreModal.vue";
 import axios from "axios";
 import ButtonBack from "../components/buttons/ButtonBack.vue";
 import { useToast } from "vue-toast-notification";
+import EditProjectModal from '@/components/modals/EditProjectModal.vue';
 export default {
   data() {
     return {
@@ -53,10 +44,12 @@ export default {
       nameGroupeCostResive: "",
       projectList: [],
       showMoreModal: false,
+      showEditModal: false,
       title: "",
+      uuid: null
     };
   },
-  components: { CreateProjectModal, ButtonBack, MoreModal },
+  components: { CreateProjectModal, ButtonBack, MoreModal, EditProjectModal },
 
   watch: {
     submitProject() {
@@ -107,15 +100,23 @@ export default {
         });
     },
 
-    showMore(name) {
-      console.log(name);
-      this.title = name;
+    showMore(item) {
+      this.title = item.name;
+      this.uuid = item.uuid;
       this.showMoreModal = true;
     },
 
     closeMoreModal() {
       this.showMoreModal = false;
     },
+
+    closeAndShowEditModal() {
+      console.log(this.title, this.uuid);
+      this.showMoreModal = false;
+      this.showEditModal = true
+    },
+
+
 
     more(uuid) {
       // const token = localStorage.getItem("token");
