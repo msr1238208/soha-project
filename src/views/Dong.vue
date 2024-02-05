@@ -1,8 +1,9 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
     <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @submitProject="submit" />
-    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal" @closeAndShowEditModal="closeAndShowEditModal" />
-    <EditProjectModal v-if="showEditModal"  />
+    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"
+      @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteProject" />
+    <EditProjectModal v-if="showEditModal" @close="closeEditModal" @renameProject="renameProject" />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
@@ -34,7 +35,7 @@ import MoreModal from "../components/modals/MoreModal.vue";
 import axios from "axios";
 import ButtonBack from "../components/buttons/ButtonBack.vue";
 import { useToast } from "vue-toast-notification";
-import EditProjectModal from '@/components/modals/EditProjectModal.vue';
+import EditProjectModal from "@/components/modals/EditProjectModal.vue";
 export default {
   data() {
     return {
@@ -46,7 +47,8 @@ export default {
       showMoreModal: false,
       showEditModal: false,
       title: "",
-      uuid: null
+      uuid: null,
+      newNameProject: "",
     };
   },
   components: { CreateProjectModal, ButtonBack, MoreModal, EditProjectModal },
@@ -61,6 +63,9 @@ export default {
   methods: {
     closeCreateModal() {
       this.showCreateModal = false;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
     },
 
     submit(project) {
@@ -113,22 +118,40 @@ export default {
     closeAndShowEditModal() {
       console.log(this.title, this.uuid);
       this.showMoreModal = false;
-      this.showEditModal = true
+      this.showEditModal = true;
     },
 
+    deleteProject() {
+      console.log(this.uuid);
+      const token = localStorage.getItem("token");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axios
+        .delete(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`)
+        .then((response) => {
+          console.log(response.data.message);
+          this.getList();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      this.showMoreModal = false;
+    },
+    renameProject(title) {
+      const token = localStorage.getItem("token");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axios
+        .put(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`, {
+          name: title,
+        })
 
-
-    more(uuid) {
-      // const token = localStorage.getItem("token");
-      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      // axios
-      //     .delete(`https://soha.iran.liara.run/api/v1/dong/project/${uuid}`)
-      //     .then((response) => {
-      //         console.log(response.data.message);
-      //     })
-      //     .catch((error) => {
-      //         console.log(error.message);
-      //     });
+        .then((response) => {
+          this.showEditModal = false;
+          this.getList();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      this.showMoreModal = false;
     },
   },
   mounted() {

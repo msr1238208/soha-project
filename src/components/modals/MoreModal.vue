@@ -10,14 +10,14 @@
                     <path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"></path>
                     <path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"></path>
                 </svg>
-                
+
                 <p class="font-extrabold flex flex-col items-center mb-9 ">بیشتر</p>
 
                 <input type="text" class="rounded-lg w-full p-2 mb-6 border-1 border-gray-200" :value="title" disabled />
                 <div class="flex gap-4">
 
 
-                    <button type="button"
+                    <button type="button" @click="deleteProject"
                         class="w-1/2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
                         حذف
                     </button>
@@ -41,6 +41,7 @@ export default {
     data() {
         return {
             nameProject: "",
+            uuid: String
         };
     },
     methods: {
@@ -56,7 +57,11 @@ export default {
         },
         showEditModal() {
             this.$emit("closeAndShowEditModal");
+        },
+        deleteProject() {
+            this.$emit("deleteProject")
         }
+
     },
 };
 </script>

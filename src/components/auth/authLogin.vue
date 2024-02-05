@@ -45,7 +45,6 @@ export default {
                     console.log(response);
                     const $toast = useToast();
                     this.$toast.success(response.data.message);
-                    // this.$router.push("/authVerify");
                     this.$emit("setPhone", this.phoneNumber);
                     this.$emit("changeComponent");
                 })
