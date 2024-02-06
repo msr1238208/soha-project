@@ -8,9 +8,6 @@
                     class="w-full h-full py-3 items-center justify-center text-center outline-none rounded-md border text-lg bg-amber-50 focus:bg-gray-30 focus:ring-1"
                     type="text" v-for="i in 4" v-model="digits[i - 1]" :key="i" maxlength="1" v-on:keyup="onTextKey" />
             </div>
-            <div class="flex flex-col px-72">
-                <ButtonEnterace :title="title" @click="submitVerify" />
-            </div>
             <div class="flex flex-col items-center mt-6">
                 <p class="text-gray-400">کدی دریافت نکردید</p>
                 <div class="flex text-gray-400">
@@ -23,12 +20,9 @@
 </template>
   
 <script>
-import ButtonEnterace from "../../components/buttons/ButtonEnterance.vue";
 import axios from "axios";
 
 export default {
-    components: { ButtonEnterace },
-
     data() {
         return {
             title: "تایید",
