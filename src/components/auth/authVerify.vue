@@ -1,12 +1,13 @@
 <template>
-    <div class="w-screen h-screen">
-        <div class="w-full h-full flex flex-col mt-16 p-10">
+    <div class="w-full ">
+        <div class="w-full h-full flex flex-col  items-center mt-16 p-10">
             <p class="flex flex-col items-center">لطفا کد دریافت شده را وارد کنید</p>
             <buttonBack class="ml-64" />
-            <div class="flex space-x-5 mx-16 my-10 md:mx-28 xl:mx-72">
+            <div class="flex space-x-5 mx-16  my-10 md:mx-28 xl:mx-72">
                 <input
-                    class="w-full h-full py-3 items-center justify-center text-center outline-none rounded-md border text-lg bg-amber-50 focus:bg-gray-30 focus:ring-1"
-                    type="text" v-for="i in 4" v-model="digits[i - 1]" :key="i" maxlength="1" v-on:keyup="onTextKey" />
+                    class="w-10 py-3 items-center justify-center text-center outline-none rounded-md border text-lg bg-amber-50 focus:bg-gray-30 focus:ring-1"
+                    type="text" v-for="i in 4" :key="i" @change="change" v-model="digits[i - 1]" maxlength="1"
+                    v-on:keyup="onTextKey" />
             </div>
             <div class="flex flex-col items-center mt-6">
                 <p class="text-gray-400">کدی دریافت نکردید</p>
@@ -20,12 +21,9 @@
 </template>
   
 <script>
-import axios from "axios";
-
 export default {
     data() {
         return {
-            title: "تایید",
             userinfo: {
                 phone: "",
                 code: "",
@@ -60,24 +58,11 @@ export default {
                 }
             }
         },
-        submitVerify() {
-            axios
-                .post("https://soha.iran.liara.run/api/v1/auth/verify", {
-                    username: this.phone,
-                    code: this.code,
-                })
-                .then((response) => {
-                    console.log(response);
+        change() {
+            let code = this.code
+            this.$emit("getCode", code);
 
-                    const token = response.data.data.access_token;
-                    localStorage.setItem("token", token);
-                    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-                    this.$router.push("/dong");
-                })
-                .catch((error) => {
-                    console.log(error.response.message);
-                });
-        },
+        }
     },
 };
 </script>

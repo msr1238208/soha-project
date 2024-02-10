@@ -1,8 +1,8 @@
 <template>
   <div class="top-0 h-screen w-full flex flex-col justify-center items-center">
     <div class="w-1/2 bg-white rounded-2xl shadow-md text-center py-8">
-      <component :is="currentComponent" @setPhone="setPhone" :phone="phone" :showError="showError"
-        @codeResive="codeResive" @validPhoneNumber="validPhoneNumber">
+      <component :is="currentComponent" @setPhone="setPhone" :phone="phone" :isEmpty="isEmpty" @getCode="getCode"
+        @validPhoneNumber="validPhoneNumber">
       </component>
 
       <button class="bg-slate-400 text-white rounded-lg py-3 w-2/3" @click="onsubmit">
@@ -23,11 +23,11 @@ export default {
   data() {
     return {
       currentComponent: "AuthLogin",
-      phone: "",
-      code: "",
+      phone: null,
+      otpCode: null,
       title: "ورود",
-      validPhone: false,
-      showError: false,
+      phonelength: false,
+      isEmpty: false,
     };
   },
 
@@ -44,29 +44,29 @@ export default {
       this.phone = phone;
     },
 
-    codeResive(otpCode) {
-      this.code = otpCode;
+    getCode(otpCode) {
+      this.otpCode = otpCode;
     },
 
     validPhoneNumber(phone) {
-      console.log("fs");
-      this.showError = false
-      this.validPhone = true
+      this.isEmpty = false
+      this.phonelength = true
       this.phone = phone
     },
 
     onsubmit() {
       switch (this.currentComponent) {
         case "AuthLogin":
-          if (this.validPhone) {
+          if (this.phonelength) {
             this.submitPhone()
           } else {
-            this.showError = true
+            this.isEmpty = true
           }
           break;
         case "AuthVerify":
-          if (this.code.length === 4) {
-            this.asignCode();
+          console.log(this.otpCode);
+          if (this.otpCode.length === 4) {
+            this.onVerify();
           }
           break;
       }
@@ -82,15 +82,14 @@ export default {
           this.title = "تایید";
         })
         .catch((error) => {
-          // useToast.error(error.response.message);
         });
     },
 
-    asignCode() {
+    onVerify() {
       axios
         .post("https://soha.iran.liara.run/api/v1/auth/verify", {
           username: this.phone,
-          code: this.code,
+          code: this.otpCode,
         })
         .then((response) => {
           const token = response.data.data.access_token;
@@ -99,7 +98,6 @@ export default {
           this.$router.push("/dong");
         })
         .catch((error) => {
-          // useToast.error(error.response.message);
         });
     },
   },
