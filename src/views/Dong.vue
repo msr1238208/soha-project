@@ -9,12 +9,10 @@
         <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
         <ButtonBack />
         <div v-for="item in projectList" :key="item">
-          <div class="flex flex-col h-full justify-between">
-            <div
-              class="p-5 bg-neutral-50 text-right px-3 rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
-              <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 ml-3" />
-              <div>{{ item.name }}</div>
-            </div>
+          <div
+            class="flex justify-between px-5 bg-neutral-50 text-right rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
+            <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 ml-3" />
+            <div @click="goProject" class="w-full h-14 ml-8 pt-4">{{ item.name }}</div>
           </div>
         </div>
 
@@ -111,6 +109,11 @@ export default {
       this.showMoreModal = true;
     },
 
+    goProject() {
+      // this.title = item.name;
+      // this.uuid = item.uuid;
+      this.$router.push('/project');
+    },
     closeMoreModal() {
       this.showMoreModal = false;
     },
