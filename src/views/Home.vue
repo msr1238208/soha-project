@@ -1,8 +1,14 @@
 <template>
   <div class="top-0 h-screen w-full flex flex-col justify-center items-center">
     <div class="w-1/2 bg-white rounded-2xl shadow-md text-center py-8">
-      <component :is="currentComponent" @setPhone="setPhone" :phone="phone" :isEmpty="isEmpty" @getCode="getCode"
-        @validPhoneNumber="validPhoneNumber">
+      <component
+        :is="currentComponent"
+        @setPhone="setPhone"
+        :phone="phone"
+        :isEmpty="isEmpty"
+        @getCode="getCode"
+        @validPhoneNumber="validPhoneNumber"
+      >
       </component>
 
       <button class="bg-slate-400 text-white rounded-lg py-3 w-2/3" @click="onsubmit">
@@ -49,18 +55,18 @@ export default {
     },
 
     validPhoneNumber(phone) {
-      this.isEmpty = false
-      this.phonelength = true
-      this.phone = phone
+      this.isEmpty = false;
+      this.phonelength = true;
+      this.phone = phone;
     },
 
     onsubmit() {
       switch (this.currentComponent) {
         case "AuthLogin":
           if (this.phonelength) {
-            this.submitPhone()
+            this.submitPhone();
           } else {
-            this.isEmpty = true
+            this.isEmpty = true;
           }
           break;
         case "AuthVerify":
@@ -81,8 +87,7 @@ export default {
           this.currentComponent = "AuthVerify";
           this.title = "تایید";
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     },
 
     onVerify() {
@@ -97,8 +102,7 @@ export default {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           this.$router.push("/dong");
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     },
   },
 };

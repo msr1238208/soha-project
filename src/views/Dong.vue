@@ -1,24 +1,44 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @submitProject="submit" />
-    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"
-      @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteProject" />
-    <EditProjectModal v-if="showEditModal" @close="closeEditModal" @renameProject="renameProject" />
+    <CreateProjectModal
+      v-if="showCreateModal"
+      @close="closeCreateModal"
+      @submitProject="submit"
+    />
+    <MoreModal
+      v-if="showMoreModal"
+      :title="title"
+      @closeMoreModal="closeMoreModal"
+      @closeAndShowEditModal="closeAndShowEditModal"
+      @deleteProject="deleteProject"
+    />
+    <EditProjectModal
+      v-if="showEditModal"
+      @close="closeEditModal"
+      @renameProject="renameProject"
+    />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
         <ButtonBack />
         <div v-for="item in projectList" :key="item">
           <div
-            class="flex justify-between px-5 bg-neutral-50 text-right rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
-            <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 ml-3" />
+            class="flex justify-between px-5 bg-neutral-50 text-right rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200"
+          >
+            <img
+              src="../assets/images/3dotes.svg"
+              @click="showMore(item)"
+              class="w-5 ml-3"
+            />
             <div @click="goProject" class="w-full h-14 ml-8 pt-4">{{ item.name }}</div>
           </div>
         </div>
 
         <div class="mb-5">
-          <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
-            @click="showCreateModal = true">
+          <button
+            class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
+            @click="showCreateModal = true"
+          >
             +
           </button>
         </div>
@@ -112,7 +132,7 @@ export default {
     goProject() {
       // this.title = item.name;
       // this.uuid = item.uuid;
-      this.$router.push('/project');
+      this.$router.push("/project");
     },
     closeMoreModal() {
       this.showMoreModal = false;
