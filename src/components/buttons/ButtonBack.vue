@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="w-fit bg-amber-50 rounded-lg outline-2">
+        <div class="w-full flex justify-end ">
             <img src="../../assets/images/Back-Button.png" alt="Go to Back" width="65" @click="goBack">
         </div>
     </div>

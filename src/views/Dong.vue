@@ -1,44 +1,26 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <CreateProjectModal
-      v-if="showCreateModal"
-      @close="closeCreateModal"
-      @submitProject="submit"
-    />
-    <MoreModal
-      v-if="showMoreModal"
-      :title="title"
-      @closeMoreModal="closeMoreModal"
-      @closeAndShowEditModal="closeAndShowEditModal"
-      @deleteProject="deleteProject"
-    />
-    <EditProjectModal
-      v-if="showEditModal"
-      @close="closeEditModal"
-      @renameProject="renameProject"
-    />
+    <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @submitProject="submit" />
+    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"
+      @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteProject" />
+    <EditProjectModal v-if="showEditModal" @close="closeEditModal" @renameProject="renameProject" />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">محاسبه دنگ</h1>
         <ButtonBack />
         <div v-for="item in projectList" :key="item">
           <div
-            class="flex justify-between px-5 bg-neutral-50 text-right rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200"
-          >
-            <img
-              src="../assets/images/3dotes.svg"
-              @click="showMore(item)"
-              class="w-5 ml-3"
-            />
-            <div @click="goProject" class="w-full h-14 ml-8 pt-4">{{ item.name }}</div>
+            class="flex justify-between px-5 bg-neutral-50 text-right rounded-lg shadow-lg border-r-[6px] border-gray-900 my-2 hover:bg-gray-200">
+            <div @click="showDetail(item.uuid)" class="w-full h-14 ml-8 pt-4">
+              {{ item.name }}
+            </div>
+            <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 ml-3" />
           </div>
         </div>
 
         <div class="mb-5">
-          <button
-            class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
-            @click="showCreateModal = true"
-          >
+          <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
+            @click="showCreateModal = true">
             +
           </button>
         </div>
@@ -54,6 +36,7 @@ import axios from "axios";
 import ButtonBack from "../components/buttons/ButtonBack.vue";
 import { useToast } from "vue-toast-notification";
 import EditProjectModal from "@/components/modals/EditProjectModal.vue";
+
 export default {
   data() {
     return {
@@ -93,8 +76,6 @@ export default {
         host_group_name: project.nameGroupeCost,
       };
       console.log("added");
-      const token = localStorage.getItem("token");
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       axios
         .post("https://soha.iran.liara.run/api/v1/dong/project", projectInfo)
         .then((response) => {
@@ -111,8 +92,6 @@ export default {
       this.closeCreateModal();
     },
     getList() {
-      const token = localStorage.getItem("token");
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       axios
         .get("https://soha.iran.liara.run/api/v1/dong/project")
         .then((response) => {
@@ -129,9 +108,8 @@ export default {
       this.showMoreModal = true;
     },
 
-    goProject() {
-      // this.title = item.name;
-      // this.uuid = item.uuid;
+    showDetail(id) {
+      localStorage.setItem("uid", id);
       this.$router.push("/project");
     },
     closeMoreModal() {
@@ -145,9 +123,6 @@ export default {
     },
 
     deleteProject() {
-      console.log(this.uuid);
-      const token = localStorage.getItem("token");
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       axios
         .delete(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`)
         .then((response) => {
@@ -160,8 +135,6 @@ export default {
       this.showMoreModal = false;
     },
     renameProject(title) {
-      const token = localStorage.getItem("token");
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       axios
         .put(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`, {
           name: title,
@@ -182,5 +155,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
