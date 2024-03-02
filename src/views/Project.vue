@@ -7,7 +7,12 @@
         <div class="bg-sky-950 rounded-lg p-8 mt-4">
           <div class="flex justify-between">
             <p class="text-gray-300">مجموع هزینه ها</p>
-            <img width="24" height="24" src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png" alt="back" />
+            <img
+              width="24"
+              height="24"
+              src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png"
+              alt="back"
+            />
           </div>
           <p class="text-white text-2xl pt-4">
             {{ expenses_sum_amount ? expenses_sum_amount : 0 }} تومان
@@ -15,16 +20,24 @@
         </div>
         <div class="flex gap-4 mt-4">
           <div class="bg-orange-400 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img class="mx-auto" width="50" height="50"
+            <img
+              class="mx-auto"
+              width="50"
+              height="50"
               src="https://img.icons8.com/ios-filled/50/FFFFFF/group-foreground-selected.png"
-              alt="group-foreground-selected" />
+              alt="group-foreground-selected"
+            />
             <p>گروه ها</p>
             <p>{{ groups_count }} گروه</p>
           </div>
           <div class="bg-green-600 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img class="mx-auto" width="50" height="50"
+            <img
+              class="mx-auto"
+              width="50"
+              height="50"
               src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/FFFFFF/external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype.png"
-              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype" />
+              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype"
+            />
             <p>سهم هر نفر</p>
             <p>{{ individual_share }} تومان</p>
           </div>
@@ -33,32 +46,44 @@
           <p>۵هزینه آخر</p>
           <div class="flex">
             <p>همه</p>
-            <img width="24" height="24" src="https://img.icons8.com/ios/50/back--v1.png" alt="back--v1" />
+            <img
+              width="24"
+              height="24"
+              src="https://img.icons8.com/ios/50/back--v1.png"
+              alt="back--v1"
+            />
           </div>
         </div>
         <div v-if="expensesList.length">
           <div v-for="item in expensesList" :key="item">
-            <div class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900">
+            <div
+              class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900"
+            >
               <div @click="goProject" class="w-full flex bg-slate-700 text-white">
-
-                <img class=" mt-3 h-10 w-10"
+                <img
+                  class="mt-3 h-10 w-10"
                   src="https://img.icons8.com/external-creatype-glyph-colourcreatype/64/EBEBEB/external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype.png"
-                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype" />
+                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype"
+                />
 
                 <div class="bg-red-500 w-full px-5 py-2">
-                  <div> {{ item.amount }}{{ item.description }}</div>
+                  <div>{{ item.amount }}{{ item.description }}</div>
                   <div class="flex justify-between">
                     <div>
                       {{ item.group.title }}
                       توسط گروه:
                     </div>
                     <div>
-                      <p>{{ created_at }}</p>
+                      <p class="dir_rtl">{{ convertDate(created_at) }}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 m-4" />
+              <img
+                src="../assets/images/3dotes.svg"
+                @click="showMore(item)"
+                class="w-5 m-4"
+              />
             </div>
           </div>
         </div>
@@ -108,6 +133,23 @@ export default {
         .catch((error) => {
           console.log(error.message);
         });
+    },
+    convertDate(dateTime) {
+      const newDate = new Date(dateTime).toLocaleString("fa-IR", {
+        calendar: "persian",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      let nDate = newDate.replace(/,/g, " -");
+      return nDate;
+    },
+
+    showMore(item) {
+      console.log(item);
     },
   },
 };

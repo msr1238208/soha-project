@@ -7,3 +7,7 @@ body{
     background-color: #eeeeee;
     direction: rtl;
 }
+
+.dir_rtl{
+    direction: ltr;
+}
