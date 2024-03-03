@@ -1,5 +1,7 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
+    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"
+      @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">{{ name }}</h1>
@@ -7,12 +9,7 @@
         <div class="bg-sky-950 rounded-lg p-8 mt-4">
           <div class="flex justify-between">
             <p class="text-gray-300">مجموع هزینه ها</p>
-            <img
-              width="24"
-              height="24"
-              src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png"
-              alt="back"
-            />
+            <img width="24" height="24" src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png" alt="back" />
           </div>
           <p class="text-white text-2xl pt-4">
             {{ expenses_sum_amount ? expenses_sum_amount : 0 }} تومان
@@ -20,24 +17,16 @@
         </div>
         <div class="flex gap-4 mt-4">
           <div class="bg-orange-400 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img
-              class="mx-auto"
-              width="50"
-              height="50"
+            <img class="mx-auto" width="50" height="50"
               src="https://img.icons8.com/ios-filled/50/FFFFFF/group-foreground-selected.png"
-              alt="group-foreground-selected"
-            />
+              alt="group-foreground-selected" />
             <p>گروه ها</p>
             <p>{{ groups_count }} گروه</p>
           </div>
           <div class="bg-green-600 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img
-              class="mx-auto"
-              width="50"
-              height="50"
+            <img class="mx-auto" width="50" height="50"
               src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/FFFFFF/external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype.png"
-              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype"
-            />
+              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype" />
             <p>سهم هر نفر</p>
             <p>{{ individual_share }} تومان</p>
           </div>
@@ -46,44 +35,31 @@
           <p>۵هزینه آخر</p>
           <div class="flex">
             <p>همه</p>
-            <img
-              width="24"
-              height="24"
-              src="https://img.icons8.com/ios/50/back--v1.png"
-              alt="back--v1"
-            />
+            <img width="24" height="24" src="https://img.icons8.com/ios/50/back--v1.png" alt="back--v1" />
           </div>
         </div>
         <div v-if="expensesList.length">
           <div v-for="item in expensesList" :key="item">
-            <div
-              class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900"
-            >
+            <div class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900">
               <div @click="goProject" class="w-full flex bg-slate-700 text-white">
-                <img
-                  class="mt-3 h-10 w-10"
+                <img class="mt-3 h-10 w-10"
                   src="https://img.icons8.com/external-creatype-glyph-colourcreatype/64/EBEBEB/external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype.png"
-                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype"
-                />
+                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype" />
 
                 <div class="bg-red-500 w-full px-5 py-2">
-                  <div>{{ item.amount }}{{ item.description }}</div>
+                  <div>{{ item.amount }} {{ item.description }}</div>
                   <div class="flex justify-between">
                     <div>
-                      {{ item.group.title }}
                       توسط گروه:
+                      {{ item.group.title }}
                     </div>
                     <div>
-                      <p class="dir_rtl">{{ convertDate(created_at) }}</p>
+                      <p class="dir_ltr">{{ convertDate(created_at) }}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <img
-                src="../assets/images/3dotes.svg"
-                @click="showMore(item)"
-                class="w-5 m-4"
-              />
+              <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 m-4" />
             </div>
           </div>
         </div>
@@ -98,9 +74,10 @@
 <script>
 import ButtonBack from "../components/buttons/ButtonBack.vue";
 import axios from "axios";
+import MoreModal from "../components/modals/MoreModal.vue";
 
 export default {
-  components: { ButtonBack },
+  components: { ButtonBack, MoreModal },
   data() {
     return {
       name: "",
@@ -109,18 +86,22 @@ export default {
       expenses_sum_amount: 0,
       groups_count: 0,
       individual_share: 0,
+      showMoreModal: false,
+      title: "",
+      uuid: "",
+      groupId: "",
+      expensesId: "",
     };
   },
-
   mounted() {
     this.getList();
   },
 
   methods: {
     getList() {
-      let uuid = localStorage.getItem("uid");
+      this.uuid = localStorage.getItem("uid");
       axios
-        .get(`https://soha.iran.liara.run/api/v1/dong/project/${uuid}`)
+        .get(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`)
         .then((response) => {
           this.expensesList = response.data.data.project.expenses.slice(-5);
           this.name = response.data.data.project.name;
@@ -134,6 +115,52 @@ export default {
           console.log(error.message);
         });
     },
+    showMore(item) {
+      this.title = item.description + item.amount;
+      this.groupId = item.group.id;
+      this.expensesId = item.id;
+      this.showMoreModal = true;
+    },
+
+
+
+    closeMoreModal() {
+      this.showMoreModal = false;
+    },
+    closeAndShowEditModal() {
+      console.log(this.title, this.uuid);
+      this.showMoreModal = false;
+      this.showEditModal = true;
+    },
+    deleteExpense() {
+      axios
+        .delete(
+          `https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`
+        )
+        .then((response) => {
+          console.log(response.data.message);
+          this.getList();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      this.showMoreModal = false;
+    },
+    renameProject(title) {
+      axios
+        .put(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`, {
+          title
+        })
+
+        .then((response) => {
+          this.showEditModal = false;
+          this.getList();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      this.showMoreModal = false;
+    },
     convertDate(dateTime) {
       const newDate = new Date(dateTime).toLocaleString("fa-IR", {
         calendar: "persian",
@@ -146,10 +173,6 @@ export default {
       });
       let nDate = newDate.replace(/,/g, " -");
       return nDate;
-    },
-
-    showMore(item) {
-      console.log(item);
     },
   },
 };
