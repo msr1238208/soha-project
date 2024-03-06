@@ -1,5 +1,6 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
+    <CreateExpenseAndGroup v-if="showCreateExpenseAndGroup" />
     <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
       @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
     <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
@@ -43,14 +44,14 @@
         <div v-if="expensesList.length">
           <div v-for="item in expensesList" :key="item">
             <div class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900">
-              <div @click="goProject" class="w-full flex bg-slate-700 text-white">
+              <div @click="goProject" class="w-full flex bg-slate-100 text-black">
                 <img class="mt-3 h-10 w-10"
                   src="https://img.icons8.com/external-creatype-glyph-colourcreatype/64/EBEBEB/external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype.png"
                   alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype" />
 
-                <div class="bg-red-500 w-full px-5 py-2">
-                  <div>{{ item.amount }} {{ item.description }}</div>
-                  <div class="flex justify-between">
+                <div class=" w-full px-5 py-2">
+                  <div>{{ item.amount }} تومان &nbsp;&nbsp;&nbsp; {{ item.description }}</div>
+                  <div class="flex justify-between text-slate-400">
                     <div>
                       توسط گروه:
                       {{ item.group.title }}
@@ -68,6 +69,12 @@
         <div v-else>
           <p class="text-center text-3xl pt-44">هیچ هزینه ای ثبت نشده است</p>
         </div>
+        <div class="mb-5">
+          <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
+            @click="showCreateExpenseAndGroup = true">
+            +
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -78,11 +85,13 @@ import ButtonBack from "../components/buttons/ButtonBack.vue";
 import axios from "axios";
 import MoreModal from "../components/modals/MoreModal.vue";
 import EditExpenseModal from "@/components/modals/EditExpenseModal.vue";
+import CreateExpenseAndGroup from "@/components/modals/CreateExpenseAndGroupModal.vue"
 
 export default {
-  components: { ButtonBack, MoreModal, EditExpenseModal },
+  components: { ButtonBack, MoreModal, EditExpenseModal, CreateExpenseAndGroup },
   data() {
     return {
+      showCreateExpenseAndGroup: false,
       showEditModal: false,
       name: "",
       created_at: null,
