@@ -88,7 +88,6 @@ export default {
           const $toast = useToast();
           $toast.error(error.data.message);
         });
-
       this.closeCreateModal();
     },
     getList() {
@@ -101,13 +100,11 @@ export default {
           console.log(error.message);
         });
     },
-
     showMore(item) {
       this.title = item.name;
       this.uuid = item.uuid;
       this.showMoreModal = true;
     },
-
     showDetail(id) {
       localStorage.setItem("uid", id);
       this.$router.push("/project");
@@ -121,7 +118,6 @@ export default {
       this.showMoreModal = false;
       this.showEditModal = true;
     },
-
     deleteProject() {
       axios
         .delete(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`)
@@ -139,7 +135,6 @@ export default {
         .put(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}`, {
           name: title,
         })
-
         .then((response) => {
           this.showEditModal = false;
           this.getList();

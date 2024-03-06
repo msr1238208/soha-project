@@ -1,7 +1,9 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <MoreModal v-if="showMoreModal" :title="title" @closeMoreModal="closeMoreModal"
+    <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
       @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
+    <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
+      :descriptions="description" :amounts="amount" />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">{{ name }}</h1>
@@ -75,11 +77,13 @@
 import ButtonBack from "../components/buttons/ButtonBack.vue";
 import axios from "axios";
 import MoreModal from "../components/modals/MoreModal.vue";
+import EditExpenseModal from "@/components/modals/EditExpenseModal.vue";
 
 export default {
-  components: { ButtonBack, MoreModal },
+  components: { ButtonBack, MoreModal, EditExpenseModal },
   data() {
     return {
+      showEditModal: false,
       name: "",
       created_at: null,
       expensesList: [],
@@ -88,9 +92,12 @@ export default {
       individual_share: 0,
       showMoreModal: false,
       title: "",
+      amountAndDescription: "",
       uuid: "",
       groupId: "",
       expensesId: "",
+      description: "",
+      amount: "",
     };
   },
   mounted() {
@@ -116,19 +123,18 @@ export default {
         });
     },
     showMore(item) {
-      this.title = item.description + item.amount;
+      this.amountAndDescription = item.description + item.amount;
       this.groupId = item.group.id;
       this.expensesId = item.id;
+      this.amount = item.amount;
+      this.description = item.description;
       this.showMoreModal = true;
     },
-
-
 
     closeMoreModal() {
       this.showMoreModal = false;
     },
     closeAndShowEditModal() {
-      console.log(this.title, this.uuid);
       this.showMoreModal = false;
       this.showEditModal = true;
     },
@@ -148,9 +154,12 @@ export default {
     },
     renameProject(title) {
       axios
-        .put(`https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`, {
-          title
-        })
+        .put(
+          `https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`,
+          {
+            title,
+          }
+        )
 
         .then((response) => {
           this.showEditModal = false;
