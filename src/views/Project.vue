@@ -4,7 +4,7 @@
     <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
       @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
     <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
-      :descriptions="description" :amounts="amount" />
+      :descriptions="description" @editExpense="editExpense" :amounts="amount" />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">{{ name }}</h1>
@@ -131,7 +131,24 @@ export default {
           console.log(error.message);
         });
     },
+    editExpense(amount, description) {
+      axios
+        .put(
+          `https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`, {
+          amount: amount,
+          description: description
+        })
+        .then((response) => {
+          console.log(response.data.message);
+          this.getList();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      this.showEditModal = false
+    },
     showMore(item) {
+
       this.amountAndDescription = item.description + item.amount;
       this.groupId = item.group.id;
       this.expensesId = item.id;
