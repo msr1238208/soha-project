@@ -1,6 +1,6 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <CreateExpenseAndGroup v-if="showCreateExpenseAndGroup" />
+    <CreateExpenseAndGroup v-if="showCreateExpenseAndGroup" @close="showCreateExpenseAndGroup = false" />
     <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
       @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
     <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
@@ -72,7 +72,7 @@
         <div class="mb-5">
           <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
             @click="showCreateExpenseAndGroup = true">
-            +
+            <img width="30" height="30" src="https://img.icons8.com/sf-regular/48/FFFFFF/plus-math.png" alt="plus-math" />
           </button>
         </div>
       </div>

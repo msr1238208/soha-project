@@ -1,6 +1,6 @@
 <template>
     <div class="fixed p-6 btn-align top- z-50 bg-gray-300 w-full h-screen bg-opacity-80 backdrop-blur-sm">
-        <button class="bottom-6 bg-gray-400 text-teal-50 py-4 text-xl px-5 rounded-lg">
+        <button @click="closeModal" class="bottom-6 bg-gray-400 text-teal-50 py-4 text-xl px-5 rounded-lg">
             <img width="30" height="30" src="https://img.icons8.com/ios-filled/50/FFFFFF/delete-sign--v1.png"
                 alt="delete-sign--v1" />
         </button>
@@ -18,7 +18,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+    methods: {
+        closeModal() {
+            this.$emit("close");
+        }
+    }
+};
 </script>
 
 <style>
