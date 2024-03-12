@@ -35,7 +35,6 @@
             />
           </div>
         </div>
-
         <div class="mb-5">
           <button
             class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"

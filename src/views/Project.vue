@@ -1,6 +1,7 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <CreateExpenseAndGroup v-if="showCreateExpenseAndGroup" @close="showCreateExpenseAndGroup = false" />
+    <AddGroupModal v-if="showAddGroupModal" />
+    <AddExpenseAndGroup v-if="showCreateExpenseAndGroup" @close="onClose" />
     <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
       @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
     <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
@@ -49,8 +50,10 @@
                   src="https://img.icons8.com/external-creatype-glyph-colourcreatype/64/EBEBEB/external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype.png"
                   alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype" />
 
-                <div class=" w-full px-5 py-2">
-                  <div>{{ item.amount }} تومان &nbsp;&nbsp;&nbsp; {{ item.description }}</div>
+                <div class="w-full px-5 py-2">
+                  <div>
+                    {{ item.amount }} تومان &nbsp;&nbsp;&nbsp; {{ item.description }}
+                  </div>
                   <div class="flex justify-between text-slate-400">
                     <div>
                       توسط گروه:
@@ -72,7 +75,8 @@
         <div class="mb-5">
           <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
             @click="showCreateExpenseAndGroup = true">
-            <img width="30" height="30" src="https://img.icons8.com/sf-regular/48/FFFFFF/plus-math.png" alt="plus-math" />
+            <img width="30" height="30" src="https://img.icons8.com/sf-regular/48/FFFFFF/plus-math.png"
+              alt="plus-math" />
           </button>
         </div>
       </div>
@@ -85,12 +89,14 @@ import ButtonBack from "../components/buttons/ButtonBack.vue";
 import axios from "axios";
 import MoreModal from "../components/modals/MoreModal.vue";
 import EditExpenseModal from "@/components/modals/EditExpenseModal.vue";
-import CreateExpenseAndGroup from "@/components/modals/CreateExpenseAndGroupModal.vue"
+import AddExpenseAndGroup from "@/components/modals/AddExpenseAndGroupModal.vue";
+import AddGroupModal from "@/components/modals/AddGroupModal.vue";
 
 export default {
-  components: { ButtonBack, MoreModal, EditExpenseModal, CreateExpenseAndGroup },
+  components: { ButtonBack, MoreModal, EditExpenseModal, AddExpenseAndGroup, AddGroupModal },
   data() {
     return {
+      showAddGroupModal: false,
       showCreateExpenseAndGroup: false,
       showEditModal: false,
       name: "",
@@ -134,10 +140,12 @@ export default {
     editExpense(amount, description) {
       axios
         .put(
-          `https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`, {
-          amount: amount,
-          description: description
-        })
+          `https://soha.iran.liara.run/api/v1/dong/project/${this.uuid}/groups/${this.groupId}/expenses/${this.expensesId}`,
+          {
+            amount: amount,
+            description: description,
+          }
+        )
         .then((response) => {
           console.log(response.data.message);
           this.getList();
@@ -145,10 +153,9 @@ export default {
         .catch((error) => {
           console.log(error.message);
         });
-      this.showEditModal = false
+      this.showEditModal = false;
     },
     showMore(item) {
-
       this.amountAndDescription = item.description + item.amount;
       this.groupId = item.group.id;
       this.expensesId = item.id;
@@ -163,6 +170,13 @@ export default {
     closeAndShowEditModal() {
       this.showMoreModal = false;
       this.showEditModal = true;
+    },
+    onClose(s) {
+      console.log(s);
+      this.showCreateExpenseAndGroup = false
+      if (s === 'addGroup') {
+        this.showAddGroupModal = true
+      }
     },
     deleteExpense() {
       axios
