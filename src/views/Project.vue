@@ -1,11 +1,28 @@
 <template>
   <div class="w-screen h-screen bg-gray-100">
-    <AddGroupModal v-if="showAddGroupModal" />
-    <AddExpenseAndGroup v-if="showCreateExpenseAndGroup" @close="onClose" />
-    <MoreModal v-if="showMoreModal" :title="amountAndDescription" @closeMoreModal="closeMoreModal"
-      @closeAndShowEditModal="closeAndShowEditModal" @deleteProject="deleteExpense" />
-    <EditExpenseModal v-if="showEditModal" @close="showEditModal = false" @renameProject="renameProject"
-      :descriptions="description" @editExpense="editExpense" :amounts="amount" />
+    <AddGroupModal v-if="showAddGroupModal" @close="closeAddGroupModal" />
+    <AddExpenseModal v-if="AddExpenseModal" @close="closeAddExpenseModal" />
+    <AddExpenseAndGroupModal
+      v-if="showCreateExpenseAndGroup"
+      @close="onClose"
+      @showAddGroup="showAddGroups"
+      @showAddExpense="onShowAddExpense"
+    />
+    <MoreModal
+      v-if="showMoreModal"
+      :title="amountAndDescription"
+      @closeMoreModal="closeMoreModal"
+      @closeAndShowEditModal="closeAndShowEditModal"
+      @deleteProject="deleteExpense"
+    />
+    <EditExpenseModal
+      v-if="showEditModal"
+      @close="showEditModal = false"
+      @renameProject="renameProject"
+      :descriptions="description"
+      @editExpense="editExpense"
+      :amounts="amount"
+    />
     <div class="w-full h-full">
       <div class="flex flex-col mx-6 h-full">
         <h1 class="text-center mt-5 font-medium text-lg">{{ name }}</h1>
@@ -13,7 +30,12 @@
         <div class="bg-sky-950 rounded-lg p-8 mt-4">
           <div class="flex justify-between">
             <p class="text-gray-300">مجموع هزینه ها</p>
-            <img width="24" height="24" src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png" alt="back" />
+            <img
+              width="24"
+              height="24"
+              src="https://img.icons8.com/ios-filled/50/FFFFFF/back.png"
+              alt="back"
+            />
           </div>
           <p class="text-white text-2xl pt-4">
             {{ expenses_sum_amount ? expenses_sum_amount : 0 }} تومان
@@ -21,16 +43,24 @@
         </div>
         <div class="flex gap-4 mt-4">
           <div class="bg-orange-400 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img class="mx-auto" width="50" height="50"
+            <img
+              class="mx-auto"
+              width="50"
+              height="50"
               src="https://img.icons8.com/ios-filled/50/FFFFFF/group-foreground-selected.png"
-              alt="group-foreground-selected" />
+              alt="group-foreground-selected"
+            />
             <p>گروه ها</p>
             <p>{{ groups_count }} گروه</p>
           </div>
           <div class="bg-green-600 text-white text-center rounded-lg w-1/2 py-4 md:py-8">
-            <img class="mx-auto" width="50" height="50"
+            <img
+              class="mx-auto"
+              width="50"
+              height="50"
               src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/FFFFFF/external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype.png"
-              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype" />
+              alt="external-dolar-miscellaneous-user-interface-v2-creatype-outline-colourcreatype"
+            />
             <p>سهم هر نفر</p>
             <p>{{ individual_share }} تومان</p>
           </div>
@@ -39,16 +69,25 @@
           <p>۵هزینه آخر</p>
           <div class="flex">
             <p>همه</p>
-            <img width="24" height="24" src="https://img.icons8.com/ios/50/back--v1.png" alt="back--v1" />
+            <img
+              width="24"
+              height="24"
+              src="https://img.icons8.com/ios/50/back--v1.png"
+              alt="back--v1"
+            />
           </div>
         </div>
         <div v-if="expensesList.length">
           <div v-for="item in expensesList" :key="item">
-            <div class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900">
+            <div
+              class="bg-neutral-50 flex rounded-lg shadow-lg border-r-[6px] mb-5 border-gray-900"
+            >
               <div @click="goProject" class="w-full flex bg-slate-100 text-black">
-                <img class="mt-3 h-10 w-10"
+                <img
+                  class="mt-3 h-10 w-10"
                   src="https://img.icons8.com/external-creatype-glyph-colourcreatype/64/EBEBEB/external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype.png"
-                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype" />
+                  alt="external-dolar-miscellaneous-user-interface-v2-creatype-glyph-colourcreatype"
+                />
 
                 <div class="w-full px-5 py-2">
                   <div>
@@ -65,7 +104,11 @@
                   </div>
                 </div>
               </div>
-              <img src="../assets/images/3dotes.svg" @click="showMore(item)" class="w-5 m-4" />
+              <img
+                src="../assets/images/3dotes.svg"
+                @click="showMore(item)"
+                class="w-5 m-4"
+              />
             </div>
           </div>
         </div>
@@ -73,10 +116,16 @@
           <p class="text-center text-3xl pt-44">هیچ هزینه ای ثبت نشده است</p>
         </div>
         <div class="mb-5">
-          <button class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
-            @click="showCreateExpenseAndGroup = true">
-            <img width="30" height="30" src="https://img.icons8.com/sf-regular/48/FFFFFF/plus-math.png"
-              alt="plus-math" />
+          <button
+            class="fixed left-7 bottom-6 bg-sky-900 text-teal-50 py-4 text-xl px-5 rounded-lg"
+            @click="showCreateExpenseAndGroup = true"
+          >
+            <img
+              width="30"
+              height="30"
+              src="https://img.icons8.com/sf-regular/48/FFFFFF/plus-math.png"
+              alt="plus-math"
+            />
           </button>
         </div>
       </div>
@@ -89,13 +138,22 @@ import ButtonBack from "../components/buttons/ButtonBack.vue";
 import axios from "axios";
 import MoreModal from "../components/modals/MoreModal.vue";
 import EditExpenseModal from "@/components/modals/EditExpenseModal.vue";
-import AddExpenseAndGroup from "@/components/modals/AddExpenseAndGroupModal.vue";
+import AddExpenseAndGroupModal from "@/components/modals/AddExpenseAndGroupModal.vue";
 import AddGroupModal from "@/components/modals/AddGroupModal.vue";
+import AddExpenseModal from "@/components/modals/AddExpenseModal.vue";
 
 export default {
-  components: { ButtonBack, MoreModal, EditExpenseModal, AddExpenseAndGroup, AddGroupModal },
+  components: {
+    ButtonBack,
+    MoreModal,
+    EditExpenseModal,
+    AddExpenseAndGroupModal,
+    AddGroupModal,
+    AddExpenseModal,
+  },
   data() {
     return {
+      show: false,
       showAddGroupModal: false,
       showCreateExpenseAndGroup: false,
       showEditModal: false,
@@ -110,6 +168,7 @@ export default {
       amountAndDescription: "",
       uuid: "",
       groupId: "",
+      AddExpenseModal: false,
       expensesId: "",
       description: "",
       amount: "",
@@ -120,6 +179,20 @@ export default {
   },
 
   methods: {
+    showAddExpenses() {
+      this.AddExpenseModal = true;
+      this.showCreateExpenseAndGroup = false;
+    },
+    showAddGroups() {
+      this.showAddGroupModal = true;
+      this.showCreateExpenseAndGroup = false;
+    },
+    closeAddExpenseModal() {
+      this.showAddExpenseModal = false;
+    },
+    closeAddGroupModal() {
+      this.showAddGroupModal = false;
+    },
     getList() {
       this.uuid = localStorage.getItem("uid");
       axios
@@ -164,6 +237,11 @@ export default {
       this.showMoreModal = true;
     },
 
+    onShowAddExpense() {
+      this.AddExpenseModal = true;
+      this.showCreateExpenseAndGroup = false;
+    },
+
     closeMoreModal() {
       this.showMoreModal = false;
     },
@@ -173,10 +251,7 @@ export default {
     },
     onClose(s) {
       console.log(s);
-      this.showCreateExpenseAndGroup = false
-      if (s === 'addGroup') {
-        this.showAddGroupModal = true
-      }
+      this.showCreateExpenseAndGroup = false;
     },
     deleteExpense() {
       axios
